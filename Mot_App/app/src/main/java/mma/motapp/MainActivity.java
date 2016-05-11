@@ -1,9 +1,13 @@
 package mma.motapp;
 
+<<<<<<< HEAD
 import android.Manifest;
 import android.app.FragmentManager;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+=======
+import android.app.FragmentManager;
+>>>>>>> 4841a2cad94df574d9eda5eb25472065f30fac8b
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -37,8 +41,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+<<<<<<< HEAD
         android.support.v4.app.FragmentManager sFm = getSupportFragmentManager();
 
+=======
+>>>>>>> 4841a2cad94df574d9eda5eb25472065f30fac8b
 
         sMapFragment = SupportMapFragment.newInstance();
 
@@ -56,7 +63,10 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         sMapFragment.getMapAsync(this);
+<<<<<<< HEAD
         sFm.beginTransaction().add(R.id.map, sMapFragment).commit();
+=======
+>>>>>>> 4841a2cad94df574d9eda5eb25472065f30fac8b
     }
 
     @Override
@@ -106,14 +116,23 @@ public class MainActivity extends AppCompatActivity
 
         if (sMapFragment.isAdded())
             sFm.beginTransaction().hide(sMapFragment).commit();
+<<<<<<< HEAD
 
         if (id == R.id.nav_maps) {
             getSupportActionBar().setTitle("Mapa");
+=======
+
+        if (id == R.id.nav_favoritos) {
+            fm.beginTransaction().replace(R.id.content_frame, new ImportFragment()).commit();
+        } else if (id == R.id.nav_gallery) {
+
+>>>>>>> 4841a2cad94df574d9eda5eb25472065f30fac8b
             if (!sMapFragment.isAdded())
                 sFm.beginTransaction().add(R.id.map, sMapFragment).commit();
             else
                 sFm.beginTransaction().show(sMapFragment).commit();
 
+<<<<<<< HEAD
         } else if (id == R.id.nav_favoritos) {
             getSupportActionBar().setTitle("Favoritos");
         } else if (id == R.id.nav_gallery) {
@@ -124,6 +143,17 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_config) {
             getSupportActionBar().setTitle("Configuración");
         }
+=======
+        } /*else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }*/
+>>>>>>> 4841a2cad94df574d9eda5eb25472065f30fac8b
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -133,6 +163,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap mMap) {
 
+<<<<<<< HEAD
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMap().setPadding(0, 1400, 0, 0);
@@ -148,6 +179,19 @@ public class MainActivity extends AppCompatActivity
         LatLng metropolis = new LatLng(6.2673888, -75.562344);
         LatLng ejecutivo = new LatLng(6.2387662, -75.59996990000002);
         LatLng puntozero = new LatLng(6.2582513, -75.57997879999999);
+=======
+        LatLng medellin   = new LatLng(6.244203, -75.58121189999997);
+        LatLng penthouse  = new LatLng(6.2582513, -75.57997879999999);
+        LatLng thematic   = new LatLng(6.2475828, -75.56012269999997);
+        LatLng pegasus    = new LatLng(6.2767208, -75.6189794);
+        LatLng collins    = new LatLng(6.2665204, -75.602798);
+        LatLng dlusso     = new LatLng(6.293998500000001, -75.57108920000002);
+        LatLng momentos   = new LatLng(6.2469813, -75.56813360000001);
+        LatLng eros       = new LatLng(6.2546754, -75.5703656);
+        LatLng metropolis = new LatLng(6.2673888, -75.562344);
+        LatLng ejecutivo  = new LatLng(6.2387662, -75.59996990000002);
+        LatLng puntozero  = new LatLng(6.2582513, -75.57997879999999);
+>>>>>>> 4841a2cad94df574d9eda5eb25472065f30fac8b
 
         mMap.addMarker(new MarkerOptions().position(penthouse).title("Motel Penthouse")
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
@@ -170,6 +214,7 @@ public class MainActivity extends AppCompatActivity
         mMap.addMarker(new MarkerOptions().position(puntozero).title("Punto Zero")
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
 
+<<<<<<< HEAD
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(medellin, 12));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
@@ -186,5 +231,11 @@ public class MainActivity extends AppCompatActivity
         }
         mMap.setMyLocationEnabled(true);
 
+=======
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(medellin));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(medellin, 12));
+        //mMap.setOnMyLocationButtonClickListener(this);
+//        enableMyLocation();
+>>>>>>> 4841a2cad94df574d9eda5eb25472065f30fac8b
     }
 }

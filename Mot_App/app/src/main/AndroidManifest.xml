@@ -18,7 +18,11 @@
 
         <activity
             android:name=".MainActivity"
+<<<<<<< HEAD
             android:label="@string/app_name"
+=======
+            android:label="@string/title_activity_main"
+>>>>>>> 4841a2cad94df574d9eda5eb25472065f30fac8b
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

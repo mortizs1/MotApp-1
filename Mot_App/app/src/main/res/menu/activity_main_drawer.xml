@@ -3,6 +3,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_maps"
+            android:icon="@android:drawable/ic_dialog_map"
+            android:title="Mapa"/>
+        <item
             android:id="@+id/nav_favoritos"
             android:icon="@android:drawable/btn_star_big_off"
             android:title="Favoritos"/>
@@ -16,7 +20,7 @@
             android:title="Slideshow" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="">
         <menu>
             <item
                 android:id="@+id/nav_config"

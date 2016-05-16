@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity
                                 motel.setTitle(obj.getString("motel"));
                                 motel.setLatitud(((Number) obj.get("latitud"))
                                         .doubleValue());
-                                motel.setLatitud(((Number) obj.get("longitud"))
+                                motel.setLongitud(((Number) obj.get("longitud"))
                                         .doubleValue());
                                 // adding motel to motels array
                                 motelList.add(motel);
@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
+
     @Override
     public void onMapReady(GoogleMap mMap) {
 
@@ -213,10 +214,11 @@ public class MainActivity extends AppCompatActivity
                 .findFragmentById(R.id.map);
         mapFragment.getMap().setPadding(0, 1400, 0, 0);
 
-
-        System.out.println("Creando marcadores"+motelList);
-
         for (int i = 0; i < motelList.size(); i++) {
+            System.out.println("Creando marcadores "+
+                    "titulo"+motelList.get(i).getTitle()+
+                    "lat"+motelList.get(i).getLatitud()+
+                    "long"+motelList.get(i).getLongitud());
             int id = motelList.get(i).getId();
             String name = motelList.get(i).getTitle();
             double lat = motelList.get(i).getLatitud();

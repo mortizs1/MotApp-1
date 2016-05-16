@@ -1,8 +1,8 @@
 package mma.motapp;
 
-
 import android.Manifest;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.app.FragmentManager;
@@ -22,7 +22,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -31,10 +39,33 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import mma.motapp.controller.AppController;
+import mma.motapp.model.Motel;
+
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {//, Favoritos.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
     SupportMapFragment sMapFragment;
+    // Log tag
+    private static final String TAG = MainActivity.class.getSimpleName();
+    // Movies json url
+    private static final String url = "http://motapp.herokuapp.com/ubicacions.json";
+    private ProgressDialog pDialog;
+    private List<Motel> motelList = new ArrayList<Motel>();
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +89,46 @@ public class MainActivity extends AppCompatActivity
 
         sMapFragment.getMapAsync(this);
         sFm.beginTransaction().add(R.id.map, sMapFragment).commit();
+
+        pDialog = new ProgressDialog(this);
+        // Showing progress dialog before making http request
+        pDialog.setMessage("Cargando conexión...");
+        pDialog.show();
+
+        // Creating volley request obj
+        JsonArrayRequest motelReq = new JsonArrayRequest(url,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d(TAG, response.toString());
+                        hidePDialog();
+                        // Parsing json
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
+                                JSONObject obj = response.getJSONObject(i);
+                                Motel motel = new Motel();
+                                motel.setId(obj.getInt("id"));
+                                motel.setTitle(obj.getString("motel"));
+                                motel.setLatitud(((Number) obj.get("latitud"))
+                                        .doubleValue());
+                                motel.setLatitud(((Number) obj.get("longitud"))
+                                        .doubleValue());
+                                // adding motel to motels array
+                                motelList.add(motel);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                hidePDialog();
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(motelReq);
     }
 
     @Override
@@ -89,7 +160,7 @@ public class MainActivity extends AppCompatActivity
                 ;
                 return true;
             case R.id.action_promocion:
-                Log.i("ActionBar", "Settings!");
+                Log.i("ActionBar", "Promocion!");
                 ;
                 return true;
             default:
@@ -128,52 +199,37 @@ public class MainActivity extends AppCompatActivity
             getSupportActionBar().setTitle("Configuración");
             fm.beginTransaction().replace(R.id.content_frame, new ImportFragment()).commit();
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
+
+
     @Override
     public void onMapReady(GoogleMap mMap) {
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMap().setPadding(0, 1400, 0, 0);
 
-        LatLng medellin   = new LatLng(6.244203, -75.58121189999997);
-        LatLng penthouse  = new LatLng(6.2582513, -75.57997879999999);
-        LatLng thematic   = new LatLng(6.2475828, -75.56012269999997);
-        LatLng pegasus    = new LatLng(6.2767208, -75.6189794);
-        LatLng collins    = new LatLng(6.2665204, -75.602798);
-        LatLng dlusso     = new LatLng(6.293998500000001, -75.57108920000002);
-        LatLng momentos   = new LatLng(6.2469813, -75.56813360000001);
-        LatLng eros       = new LatLng(6.2546754, -75.5703656);
-        LatLng metropolis = new LatLng(6.2673888, -75.562344);
-        LatLng ejecutivo  = new LatLng(6.2387662, -75.59996990000002);
-        LatLng puntozero  = new LatLng(6.2582513, -75.57997879999999);
 
-        mMap.addMarker(new MarkerOptions().position(penthouse).title("Motel Penthouse")
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
-        mMap.addMarker(new MarkerOptions().position(thematic).title("Thematic Suites")
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
-        mMap.addMarker(new MarkerOptions().position(pegasus).title("Motel Pegasus")
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
-        mMap.addMarker(new MarkerOptions().position(collins).title("Motel Collins")
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
-        mMap.addMarker(new MarkerOptions().position(dlusso).title("D'Lusso")
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
-        mMap.addMarker(new MarkerOptions().position(momentos).title("Momentos Suites")
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
-        mMap.addMarker(new MarkerOptions().position(eros).title("Motel Eros")
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
-        mMap.addMarker(new MarkerOptions().position(metropolis).title("Motel Metrópolis")
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
-        mMap.addMarker(new MarkerOptions().position(ejecutivo).title("Motel Ejecutivo La 33")
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
-        mMap.addMarker(new MarkerOptions().position(puntozero).title("Punto Zero")
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
+        System.out.println("Creando marcadores"+motelList);
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(medellin, 12));
+        for (int i = 0; i < motelList.size(); i++) {
+            int id = motelList.get(i).getId();
+            String name = motelList.get(i).getTitle();
+            double lat = motelList.get(i).getLatitud();
+            double lon = motelList.get(i).getLongitud();
+
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(motelList.get(i).getLatitud(), motelList.get(i).getLongitud()))
+                    .title(motelList.get(i).getTitle())
+                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
+        }
+
+        mMap.animateCamera(CameraUpdateFactory
+                .newLatLngZoom(new LatLng(6.244203, -75.58121189999997), 12));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -189,4 +245,12 @@ public class MainActivity extends AppCompatActivity
         }
         mMap.setMyLocationEnabled(true);
     }
+
+    private void hidePDialog() {
+        if (pDialog != null) {
+            pDialog.dismiss();
+            pDialog = null;
+        }
+    }
+
 }

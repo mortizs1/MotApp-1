@@ -46,6 +46,7 @@ public class MapsActivity extends ActionBarActivity implements
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
     }
 
     @Override

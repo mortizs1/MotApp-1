@@ -1,57 +1,56 @@
 package mma.motapp;
 
-import android.Manifest;
-import android.app.FragmentManager;
-import android.app.ProgressDialog;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
-import android.app.FragmentManager;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.View;
-import android.support.design.widget.NavigationView;
+import android.Manifest;
+import android.os.Bundle;
+import android.view.Menu;
+import android.widget.Toast;
+import android.view.MenuItem;
+import android.content.Intent;
+import android.content.Context;
+import android.widget.ListView;
+import android.app.ProgressDialog;
+import android.app.FragmentManager;
+import android.content.pm.PackageManager;
+
+import android.support.v7.widget.Toolbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ListView;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.design.widget.NavigationView;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONException;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.android.volley.Response;
+import com.android.volley.VolleyLog;
+import com.android.volley.VolleyError;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.LatLng;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 
-import mma.motapp.controller.AppController;
 import mma.motapp.model.Motel;
+import mma.motapp.controller.AppController;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        OnMarkerClickListener,
+        OnMapReadyCallback{
 
     SupportMapFragment sMapFragment;
     // Log tag
@@ -205,20 +204,18 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
-
     @Override
     public void onMapReady(GoogleMap mMap) {
-
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMap().setPadding(0, 1400, 0, 0);
 
         for (int i = 0; i < motelList.size(); i++) {
             System.out.println("Creando marcadores "+
-                    "titulo"+motelList.get(i).getTitle()+
-                    "lat"+motelList.get(i).getLatitud()+
-                    "long"+motelList.get(i).getLongitud());
+                    "titulo "+motelList.get(i).getTitle()+
+                    " lat "+motelList.get(i).getLatitud()+
+                    " long "+motelList.get(i).getLongitud());
+
             int id = motelList.get(i).getId();
             String name = motelList.get(i).getTitle();
             double lat = motelList.get(i).getLatitud();
@@ -230,6 +227,8 @@ public class MainActivity extends AppCompatActivity
                     .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
         }
 
+        mMap.setOnMarkerClickListener((OnMarkerClickListener) this);
+        mMap.setMyLocationEnabled(true);
         mMap.animateCamera(CameraUpdateFactory
                 .newLatLngZoom(new LatLng(6.244203, -75.58121189999997), 12));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -245,8 +244,24 @@ public class MainActivity extends AppCompatActivity
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        mMap.setMyLocationEnabled(true);
     }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+
+        final Context con = this;
+        Intent intent = new Intent(con, RoomsActitvity.class);
+        /*switch (marker.getTitle()){
+            case "Motel Penthouse":
+                Toast.makeText(getApplicationContext(), "Motel Penthouse",
+                        Toast.LENGTH_SHORT).show();
+                startActivity(intent);
+                break;
+        }*/
+        startActivity(intent);
+        return false;
+    }
+
 
     private void hidePDialog() {
         if (pDialog != null) {
